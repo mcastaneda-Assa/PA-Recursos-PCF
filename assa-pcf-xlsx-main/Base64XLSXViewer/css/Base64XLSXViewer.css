@@ -1,0 +1,386 @@
+/* ============================================
+   Base64 XLSX Viewer - Excel Preview
+   Responsive PCF Control
+   ============================================ */
+
+.xlsx-viewer-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background-color: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+/* ---- TOOLBAR ---- */
+.xlsx-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #1a6b3c 0%, #217346 100%);
+    padding: 8px 14px;
+    gap: 8px;
+    min-height: 44px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.xlsx-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.xlsx-toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e0e0e0;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    min-width: 34px;
+    height: 34px;
+}
+
+.xlsx-toolbar button:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.xlsx-toolbar button:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.xlsx-icon {
+    display: inline-flex;
+    align-items: center;
+    color: #27ae60;
+    margin-right: 4px;
+}
+
+.xlsx-file-name {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    font-weight: 500;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ---- SHEET TABS ---- */
+.xlsx-sheet-tabs {
+    display: flex;
+    align-items: center;
+    background: #2d2d44;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    flex-shrink: 0;
+    padding: 0 4px;
+    gap: 2px;
+    min-height: 36px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.xlsx-sheet-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.xlsx-sheet-tabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.xlsx-sheet-tabs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.xlsx-sheet-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    min-height: 36px;
+    border-radius: 4px 4px 0 0;
+}
+
+.xlsx-sheet-tab:hover {
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.xlsx-sheet-tab.active {
+    color: #ffffff;
+    background: rgba(33, 115, 70, 0.3);
+    border-bottom: 2px solid #27ae60;
+}
+
+/* ---- VIEWER WRAPPER ---- */
+.xlsx-viewer-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
+    background: #ffffff;
+}
+
+/* ---- SHEET INFO BAR ---- */
+.xlsx-sheet-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 12px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    font-size: 11px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+/* ---- TABLE CONTAINER ---- */
+.xlsx-table-container {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    min-height: 0;
+}
+
+.xlsx-table-container table {
+    border-collapse: collapse;
+    width: max-content;
+    min-width: 100%;
+    font-size: 13px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.xlsx-table-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #217346;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid #1a6b3c;
+    white-space: nowrap;
+}
+
+.xlsx-table-container tbody td {
+    padding: 6px 12px;
+    border: 1px solid #e0e0e0;
+    white-space: nowrap;
+    color: #333;
+    max-width: 350px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.xlsx-table-container tbody tr:nth-child(even) {
+    background: #f7f9fc;
+}
+
+.xlsx-table-container tbody tr:nth-child(odd) {
+    background: #ffffff;
+}
+
+.xlsx-table-container tbody tr:hover {
+    background: #e8f5e9;
+}
+
+/* Row number column */
+.xlsx-table-container .xlsx-row-num {
+    background: #f0f0f0;
+    color: #888;
+    font-size: 11px;
+    text-align: center;
+    font-weight: 500;
+    min-width: 40px;
+    border-right: 2px solid #d0d0d0;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+}
+
+.xlsx-table-container thead .xlsx-row-num {
+    background: #1a5c38;
+    border-right: 2px solid #145230;
+    z-index: 6;
+}
+
+.xlsx-table-container tbody tr:nth-child(even) .xlsx-row-num {
+    background: #e8e8e8;
+}
+
+.xlsx-table-container tbody tr:nth-child(odd) .xlsx-row-num {
+    background: #f0f0f0;
+}
+
+.xlsx-table-container tbody tr:hover .xlsx-row-num {
+    background: #c8e6c9;
+}
+
+/* ---- EMPTY STATE ---- */
+.xlsx-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #666;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+    min-height: 300px;
+    background: #1a1a2e;
+}
+
+.xlsx-empty-icon {
+    opacity: 0.3;
+}
+
+.xlsx-empty-icon svg {
+    stroke: #8888aa;
+}
+
+.xlsx-empty-text {
+    font-size: 14px;
+    color: #8888aa;
+    line-height: 1.5;
+}
+
+/* ---- ERROR STATE ---- */
+.xlsx-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #e74c3c;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+    min-height: 300px;
+    background: #1a1a2e;
+}
+
+.xlsx-error-icon {
+    font-size: 48px;
+}
+
+.xlsx-error-text {
+    font-size: 14px;
+    color: #e74c3c;
+    line-height: 1.5;
+    max-width: 500px;
+    word-break: break-word;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 600px) {
+    .xlsx-toolbar {
+        padding: 6px 10px;
+        gap: 4px;
+    }
+
+    .xlsx-toolbar button {
+        padding: 5px 7px;
+        min-width: 30px;
+        height: 30px;
+    }
+
+    .xlsx-file-name {
+        max-width: 140px;
+        font-size: 12px;
+    }
+
+    .xlsx-viewer-container {
+        min-height: 300px;
+        border-radius: 4px;
+    }
+
+    .xlsx-sheet-tab {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .xlsx-table-container table {
+        font-size: 12px;
+    }
+
+    .xlsx-table-container thead th {
+        padding: 6px 8px;
+    }
+
+    .xlsx-table-container tbody td {
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .xlsx-file-name {
+        display: none;
+    }
+
+    .xlsx-icon {
+        display: none;
+    }
+}
+
+/* ---- FULLSCREEN ---- */
+.xlsx-viewer-container:fullscreen {
+    border-radius: 0;
+}
+
+/* ---- PRINT ---- */
+@media print {
+    .xlsx-toolbar {
+        display: none !important;
+    }
+
+    .xlsx-sheet-tabs {
+        display: none !important;
+    }
+
+    .xlsx-viewer-container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .xlsx-table-container table {
+        font-size: 11px;
+    }
+
+    .xlsx-table-container thead th {
+        background: #ccc !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

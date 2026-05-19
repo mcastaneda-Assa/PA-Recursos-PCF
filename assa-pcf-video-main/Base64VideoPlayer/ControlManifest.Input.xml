@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="VideoPlayerV2" constructor="Base64VideoPlayer" version="1.0.0" display-name-key="Base64 Video Player" description-key="Reproductor de video que recibe un base64 MP4 y lo renderiza con controles de reproducción" control-type="standard">
+    <external-service-usage enabled="false">
+    </external-service-usage>
+
+    <property name="fileName" display-name-key="Nombre del Archivo" description-key="Nombre del archivo de video para mostrar y descargar" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="base64Content" display-name-key="Contenido Base64" description-key="Cadena Base64 del contenido del video" of-type="Multiple" usage="bound" required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/Base64VideoPlayer.css" order="1" />
+    </resources>
+  </control>
+</manifest>

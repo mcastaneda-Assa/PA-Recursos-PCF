@@ -1,0 +1,322 @@
+/* ============================================================
+   Base64 Audio Player – PCF Component Styles
+   ============================================================ */
+
+/* ── Main container ────────────────────────────────────────── */
+.audio-player-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  overflow: hidden;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* ── Toolbar ───────────────────────────────────────────────── */
+.audio-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #ffffff;
+  min-height: 42px;
+  box-sizing: border-box;
+}
+
+.audio-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.audio-toolbar-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: #a0b4f0;
+}
+
+.audio-file-name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+  color: #e0e6f0;
+  user-select: text;
+}
+
+.audio-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  color: #e0e6f0;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.audio-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.audio-toolbar-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* ── Player wrapper ────────────────────────────────────────── */
+.audio-player-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+/* ── Controls ──────────────────────────────────────────────── */
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Play / Pause button */
+.audio-play-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.35);
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.audio-play-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 14px rgba(0, 120, 212, 0.45);
+}
+
+.audio-play-btn:active {
+  transform: scale(0.97);
+}
+
+.audio-play-btn svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: #ffffff;
+}
+
+/* ── Progress section ──────────────────────────────────────── */
+.audio-progress-section {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+}
+
+.audio-time {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+  text-align: center;
+  color: #555;
+  user-select: none;
+}
+
+/* Progress bar (range input) */
+.audio-progress-bar {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #0078d4 0%,
+    #0078d4 var(--progress, 0%),
+    #d0d0d0 var(--progress, 0%),
+    #d0d0d0 100%
+  );
+  transition: background 0.1s;
+}
+
+.audio-progress-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0078d4;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+
+.audio-progress-bar::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.audio-progress-bar::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0078d4;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.audio-progress-bar::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+/* ── Volume section ────────────────────────────────────────── */
+.audio-volume-section {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.audio-volume-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.audio-volume-btn:hover {
+  color: #555;
+}
+
+.audio-volume-btn svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.audio-volume-bar {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70px;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    #888 0%,
+    #888 var(--volume, 100%),
+    #d0d0d0 var(--volume, 100%),
+    #d0d0d0 100%
+  );
+}
+
+.audio-volume-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #888;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.audio-volume-bar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #888;
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.audio-volume-bar::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+/* ── Empty & Error states ──────────────────────────────────── */
+.audio-empty-state,
+.audio-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 32px 16px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.audio-empty-state {
+  background: #1a1a2e;
+  border-radius: 8px;
+}
+
+.audio-empty-state svg {
+  width: 64px;
+  height: 64px;
+  fill: rgba(160, 180, 240, 0.25);
+  margin-bottom: 14px;
+}
+
+.audio-empty-state span {
+  color: rgba(224, 230, 240, 0.55);
+  font-size: 13px;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+.audio-error-state {
+  background: #1a1a2e;
+  border-radius: 8px;
+}
+
+.audio-error-state .audio-error-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.audio-error-state span {
+  color: #ff6b6b;
+  font-size: 13px;
+  max-width: 340px;
+  line-height: 1.5;
+}

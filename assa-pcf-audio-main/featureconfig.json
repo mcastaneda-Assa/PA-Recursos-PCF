@@ -1,0 +1,4 @@
+{
+    "pcfAllowFeatures": ["AllowMoreThanFiftyInputParamFeature"],
+    "pcfBundleSizeLimit": 3000000
+}

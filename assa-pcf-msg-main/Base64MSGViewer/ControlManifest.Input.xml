@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="MSGViewer" constructor="Base64MSGViewer" version="1.0.0" display-name-key="Base64 MSG Viewer" description-key="Visor de correos .MSG responsive que recibe un base64 y renderiza el documento con controles completos" control-type="standard">
+    <external-service-usage enabled="false">
+    </external-service-usage>
+
+    <property name="fileName" display-name-key="Nombre del Archivo" description-key="Nombre del archivo .msg para mostrar y descargar" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="base64Content" display-name-key="Contenido Base64" description-key="Cadena Base64 del contenido del archivo .msg" of-type="Multiple" usage="bound" required="false" />
+    
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/Base64MSGViewer.css" order="1" />
+    </resources>
+  </control>
+</manifest>

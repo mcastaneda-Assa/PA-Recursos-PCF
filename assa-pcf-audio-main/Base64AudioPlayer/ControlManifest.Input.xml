@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="AudioPlayerNamespace" constructor="Base64AudioPlayer" version="0.0.1" display-name-key="Base64 Audio Player" description-key="Reproductor de audio que recibe un base64 MP3 y lo renderiza con controles de reproducción" control-type="standard" >
+    <external-service-usage enabled="false">
+    </external-service-usage>
+    <property name="fileName" display-name-key="File Name" description-key="Nombre del archivo de audio para mostrar y descargar" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="base64Content" display-name-key="Base64 Content" description-key="Cadena Base64 del contenido del audio" of-type="Multiple" usage="bound" required="false" />
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/Base64AudioPlayer.css" order="1" />
+    </resources>
+  </control>
+</manifest>

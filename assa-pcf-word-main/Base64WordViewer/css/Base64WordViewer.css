@@ -1,0 +1,449 @@
+/* ============================================
+   Base64 Word Viewer - DOCX Preview
+   Responsive PCF Control
+   ============================================ */
+
+.word-viewer-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background-color: #1a1a2e;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+/* ---- TOOLBAR ---- */
+.word-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #1a3a6b 0%, #2b579a 100%);
+    padding: 8px 14px;
+    gap: 8px;
+    min-height: 44px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.word-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.word-toolbar button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e0e0e0;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    min-width: 34px;
+    height: 34px;
+}
+
+.word-toolbar button:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.word-toolbar button:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.word-icon {
+    display: inline-flex;
+    align-items: center;
+    color: #4a90d9;
+    margin-right: 4px;
+}
+
+.word-file-name {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    font-weight: 500;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.word-zoom-label {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+    user-select: none;
+}
+
+/* ---- VIEWER WRAPPER ---- */
+.word-viewer-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: relative;
+    min-height: 0;
+    background: #e8e8e8;
+}
+
+/* ---- DOCUMENT CONTAINER ---- */
+.word-document-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding: 24px 16px;
+    min-height: 0;
+}
+
+/* ---- PAGE (simulates Word page) ---- */
+.word-page {
+    background: #ffffff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+    padding: 60px 65px;
+    max-width: 816px;
+    width: 100%;
+    min-height: 500px;
+    font-family: 'Calibri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    transition: transform 0.15s ease;
+    margin-bottom: 24px;
+}
+
+/* ---- Word Document Typography ---- */
+.word-page h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2b579a;
+    margin: 20px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.word-page h1.doc-title {
+    font-size: 28px;
+    color: #1a3a6b;
+    border-bottom: 2px solid #2b579a;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.word-page h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2b579a;
+    margin: 18px 0 8px;
+}
+
+.word-page h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3a6db5;
+    margin: 14px 0 6px;
+}
+
+.word-page h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a7ec7;
+    margin: 12px 0 4px;
+}
+
+.word-page p {
+    margin: 6px 0;
+}
+
+.word-page ul,
+.word-page ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.word-page li {
+    margin: 3px 0;
+}
+
+.word-page a {
+    color: #2b579a;
+    text-decoration: underline;
+}
+
+.word-page a:hover {
+    color: #1a3a6b;
+}
+
+/* Tables */
+.word-page table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 13px;
+}
+
+.word-page table td,
+.word-page table th {
+    border: 1px solid #c0c0c0;
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.word-page table th {
+    background: #2b579a;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.word-page table tbody tr:nth-child(even) {
+    background: #f2f6fc;
+}
+
+.word-page table tbody tr:hover {
+    background: #dce6f5;
+}
+
+/* Images */
+.word-page img {
+    max-width: 100%;
+    height: auto;
+    margin: 12px 0;
+    border-radius: 2px;
+}
+
+/* Blockquote */
+.word-page blockquote {
+    border-left: 4px solid #2b579a;
+    margin: 12px 0;
+    padding: 8px 16px;
+    background: #f2f6fc;
+    color: #555;
+    font-style: italic;
+}
+
+/* Code */
+.word-page code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.word-page pre {
+    background: #f5f5f5;
+    padding: 12px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    border: 1px solid #e0e0e0;
+    margin: 12px 0;
+}
+
+.word-page pre code {
+    background: none;
+    padding: 0;
+}
+
+/* Horizontal rule */
+.word-page hr {
+    border: none;
+    border-top: 1px solid #d0d0d0;
+    margin: 16px 0;
+}
+
+/* ---- LOADING STATE ---- */
+.word-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+    min-height: 300px;
+    background: #e8e8e8;
+}
+
+.word-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #d0d0d0;
+    border-top: 4px solid #2b579a;
+    border-radius: 50%;
+    animation: word-spin 0.8s linear infinite;
+}
+
+@keyframes word-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.word-loading-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* ---- EMPTY STATE ---- */
+.word-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #666;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+    min-height: 300px;
+    background: #1a1a2e;
+}
+
+.word-empty-icon {
+    opacity: 0.3;
+}
+
+.word-empty-icon svg {
+    stroke: #8888aa;
+}
+
+.word-empty-text {
+    font-size: 14px;
+    color: #8888aa;
+    line-height: 1.5;
+}
+
+/* ---- ERROR STATE ---- */
+.word-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    color: #e74c3c;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+    min-height: 300px;
+    background: #1a1a2e;
+}
+
+.word-error-icon {
+    font-size: 48px;
+}
+
+.word-error-text {
+    font-size: 14px;
+    color: #e74c3c;
+    line-height: 1.5;
+    max-width: 500px;
+    word-break: break-word;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 600px) {
+    .word-toolbar {
+        padding: 6px 10px;
+        gap: 4px;
+    }
+
+    .word-toolbar button {
+        padding: 5px 7px;
+        min-width: 30px;
+        height: 30px;
+    }
+
+    .word-file-name {
+        max-width: 140px;
+        font-size: 12px;
+    }
+
+    .word-viewer-container {
+        min-height: 300px;
+        border-radius: 4px;
+    }
+
+    .word-page {
+        padding: 30px 24px;
+    }
+
+    .word-document-container {
+        padding: 12px 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .word-file-name {
+        display: none;
+    }
+
+    .word-icon {
+        display: none;
+    }
+
+    .word-zoom-label {
+        display: none;
+    }
+
+    .word-page {
+        padding: 20px 16px;
+    }
+}
+
+/* ---- FULLSCREEN ---- */
+.word-viewer-container:fullscreen {
+    border-radius: 0;
+}
+
+.word-viewer-container:fullscreen .word-viewer-wrapper {
+    height: 100%;
+}
+
+/* ---- PRINT ---- */
+@media print {
+    .word-toolbar {
+        display: none !important;
+    }
+
+    .word-viewer-container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .word-viewer-wrapper {
+        background: #ffffff !important;
+    }
+
+    .word-document-container {
+        padding: 0 !important;
+    }
+
+    .word-page {
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+}

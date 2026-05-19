@@ -1,0 +1,251 @@
+/* Base64 MSG Viewer - Responsive Container */
+.msg-viewer-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Toolbar */
+.msg-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.msg-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.msg-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.msg-file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+/* Buttons */
+.msg-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background-color: #f3f2f1;
+  border: 1px solid #d0ccc4;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333333;
+  transition: all 0.2s ease;
+}
+
+.msg-button:hover {
+  background-color: #e8e7e4;
+  border-color: #ccc;
+}
+
+.msg-button:active {
+  background-color: #ddd;
+}
+
+.msg-button svg {
+  margin-right: 6px;
+  color: currentColor;
+}
+
+.msg-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Viewer Wrapper */
+.msg-viewer-wrapper {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+/* Iframe */
+.msg-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Empty State */
+.msg-empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #999999;
+  background-color: #f9f9f9;
+}
+
+.msg-empty-state svg {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  color: #d0ccc4;
+}
+
+.msg-empty-state-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333333;
+}
+
+.msg-empty-state-text {
+  font-size: 14px;
+  color: #999999;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .msg-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .msg-toolbar-left {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .msg-toolbar-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .msg-file-name {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .msg-button {
+    flex: 1;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .msg-toolbar {
+    padding: 8px 12px;
+  }
+
+  .msg-toolbar-left,
+  .msg-toolbar-right {
+    gap: 4px;
+  }
+
+  .msg-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .msg-button svg {
+    margin-right: 4px;
+  }
+
+  .msg-empty-state {
+    padding: 20px 10px;
+  }
+
+  .msg-empty-state svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .msg-empty-state-title {
+    font-size: 16px;
+  }
+
+  .msg-empty-state-text {
+    font-size: 12px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .msg-toolbar {
+    display: none;
+  }
+
+  .msg-viewer-container {
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .msg-iframe {
+    border: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .msg-viewer-container {
+    background-color: #1e1e1e;
+  }
+
+  .msg-toolbar {
+    background-color: #2d2d2d;
+    border-bottom-color: #3e3e3e;
+  }
+
+  .msg-button {
+    background-color: #3e3e3e;
+    border-color: #555555;
+    color: #e0e0e0;
+  }
+
+  .msg-button:hover {
+    background-color: #4a4a4a;
+    border-color: #666666;
+  }
+
+  .msg-file-name {
+    color: #e0e0e0;
+  }
+
+  .msg-empty-state {
+    background-color: #252525;
+    color: #666666;
+  }
+
+  .msg-empty-state-title {
+    color: #e0e0e0;
+  }
+
+  .msg-viewer-wrapper {
+    background-color: #1e1e1e;
+  }
+}

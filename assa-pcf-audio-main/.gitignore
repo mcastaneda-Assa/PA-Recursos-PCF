@@ -1,0 +1,7 @@
+node_modules/
+out/
+obj/
+bin/
+*.log
+.DS_Store
+~/Library/

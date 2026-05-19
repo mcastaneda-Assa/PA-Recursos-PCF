@@ -1,0 +1,51 @@
+EJEMPLO DE BASE64 PARA TESTING DEL CONTROL PCF-MSG
+==================================================
+
+Este archivo contiene un ejemplo de base64 que puedes usar para probar el control.
+
+BASE64 DE EJEMPLO (Email de prueba):
+-----------------------------------
+
+RnJvbTogdXN1YXJpb0BleGFtcGxlLmNvbQpUbzogZGVzdGluYXRhcmlvQGV4YW1wbGUuY29tClN1Ympl
+Y3Q6IEVtYWlsIGRlIHBydWViYSBwYXJhIFBDRi1NU0cKRGF0ZTogVGh1LCA2IE1hciAyMDI2IDE2OjAw
+OjAwICswMDAwCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRlbnQtVHlwZTogdGV4dC9wbGFpbjsgY2hhcnNl
+dD1VVEYtOAoKRXN0ZSBlcyB1biBjb3JyZW8gZWxlY3Ryw7NuaWNvIGRlIHBydWViYSBwYXJhIGVsIGNv
+bnRyb2wgUENGLU1TRy4KCkVsIGNvbnRyb2wgZGViZXLDrWEgcmVuZGVyaXphciBlc3RlIG1lbnNhamUg
+Y29ycmVjdGFtZW50ZS4KCkF0ZW50YW1lbnRlLApUdSBBcGxpY2FjacOzbiBQQ0YtTVNHCg==
+
+COMO USARLO EN EL HARNESS:
+--------------------------
+
+1. Abre http://localhost:8181
+2. En el panel "DATA" o "PROPERTIES" en la izquierda
+3. Busca el campo "base64Content" 
+4. Pega el contenido base64 arriba
+5. Asegúrate de que "fileName" tenga un valor como "test_email.msg"
+6. El control debería renderizar el contenido en el iframe
+
+NOTAS:
+------
+
+- Este ejemplo es un email en formato de texto plano
+- Los navegadores pueden renderizarlo directamente
+- Para archivos .msg binarios reales, necesitarás generar el base64
+  de un archivo .msg verdadero usando:
+  base64 archivo.msg > archivo.b64
+
+- El control está configurado para:
+  * Descarga: Convertir el base64 a blob y descargar
+  * Impresión: Imprimir desde el iframe
+  * Nueva pestaña: Abrir en ventana nueva
+
+GENERAR TU PROPIO BASE64:
+------------------------
+
+Si tienes un archivo .msg real:
+
+  # En macOS/Linux:
+  base64 -i archivo.msg > archivo.b64
+  
+  # O usando xxd:
+  xxd -p archivo.msg | tr -d '\n' | base64 > archivo.b64
+
+Luego copia el contenido de archivo.b64 y pégalo en el campo base64Content del harness.
