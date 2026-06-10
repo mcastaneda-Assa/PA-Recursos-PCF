@@ -1,0 +1,19 @@
+/* Base64 PNG Viewer Styles */
+
+.png-viewer-container {
+    width: 100%;
+    overflow: auto;
+}
+
+.png-viewer-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.png-viewer-placeholder {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}

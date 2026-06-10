@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="ImageViewerV2" constructor="Base64PNGViewer" version="1.0.0" display-name-key="Base64 PNG Viewer" description-key="Visor de imagen PNG que recibe contenido Base64 y lo renderiza" control-type="standard">
+    <external-service-usage enabled="false">
+    </external-service-usage>
+
+    <property name="fileName" display-name-key="Nombre del Archivo" description-key="Nombre del archivo de imagen para mostrar y descargar" of-type="SingleLine.Text" usage="bound" required="false" />
+    <property name="base64Content" display-name-key="Contenido Base64" description-key="Cadena Base64 del contenido de la imagen PNG" of-type="Multiple" usage="bound" required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="css/Base64PNGViewer.css" order="1" />
+    </resources>
+  </control>
+</manifest>

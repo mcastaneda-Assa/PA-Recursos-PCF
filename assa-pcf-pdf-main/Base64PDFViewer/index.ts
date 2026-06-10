@@ -1,4 +1,7 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
+// Legacy build + inline worker entry — no CDN or separate file required
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+import "pdfjs-dist/legacy/build/pdf.worker.entry";
 
 const ICONS = {
     download: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
@@ -18,7 +21,6 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     // DOM
     private _mainContainer: HTMLDivElement;
     private _toolbar: HTMLDivElement;
-    private _iframe: HTMLIFrameElement;
     private _fileNameSpan: HTMLSpanElement;
     private _viewerWrapper: HTMLDivElement;
 
@@ -74,22 +76,14 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
         this._mainContainer = document.createElement("div");
         this._mainContainer.className = "pdf-viewer-container";
 
-        // Toolbar
         this._toolbar = this._buildToolbar();
+        this._toolbar.style.display = "none";
         this._mainContainer.appendChild(this._toolbar);
 
-        // Viewer wrapper
         this._viewerWrapper = document.createElement("div");
         this._viewerWrapper.className = "pdf-viewer-wrapper";
-
-        // iframe for native PDF rendering
-        this._iframe = document.createElement("iframe");
-        this._iframe.className = "pdf-iframe";
-        this._iframe.setAttribute("allowfullscreen", "true");
-        this._iframe.style.display = "none";
-        this._viewerWrapper.appendChild(this._iframe);
-
         this._mainContainer.appendChild(this._viewerWrapper);
+
         this._container.appendChild(this._mainContainer);
 
         this._showEmptyState();
@@ -99,7 +93,6 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
         const toolbar = document.createElement("div");
         toolbar.className = "pdf-toolbar";
 
-        // Left: file name
         const leftGroup = document.createElement("div");
         leftGroup.className = "pdf-toolbar-group";
 
@@ -115,25 +108,13 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
 
         toolbar.appendChild(leftGroup);
 
-        // Right: actions
         const rightGroup = document.createElement("div");
         rightGroup.className = "pdf-toolbar-group";
 
-        // Open in new tab
-        const newTabBtn = this._createButton(ICONS.newTab, "Abrir en nueva pestaña", () => this._openInNewTab());
-        rightGroup.appendChild(newTabBtn);
-
-        // Download
-        const downloadBtn = this._createButton(ICONS.download, "Descargar PDF", () => this._downloadPDF());
-        rightGroup.appendChild(downloadBtn);
-
-        // Print
-        const printBtn = this._createButton(ICONS.print, "Imprimir", () => this._printPDF());
-        rightGroup.appendChild(printBtn);
-
-        // Fullscreen
-        const fullscreenBtn = this._createButton(ICONS.fullscreen, "Pantalla completa", () => this._toggleFullscreen());
-        rightGroup.appendChild(fullscreenBtn);
+        rightGroup.appendChild(this._createButton(ICONS.newTab, "Abrir en nueva pestaña", () => this._openInNewTab()));
+        rightGroup.appendChild(this._createButton(ICONS.download, "Descargar PDF", () => this._downloadPDF()));
+        rightGroup.appendChild(this._createButton(ICONS.print, "Imprimir", () => this._printPDF()));
+        rightGroup.appendChild(this._createButton(ICONS.fullscreen, "Pantalla completa", () => this._toggleFullscreen()));
 
         toolbar.appendChild(rightGroup);
 
@@ -157,7 +138,7 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     private _normalizeBase64(base64: string): string {
         let cleanBase64 = base64.trim();
 
-        // Remove data URI prefix if present.
+        // Remove data URI prefix if present (e.g. "data:application/pdf;base64,...").
         const commaIndex = cleanBase64.indexOf(",");
         if (commaIndex >= 0) {
             cleanBase64 = cleanBase64.substring(commaIndex + 1);
@@ -168,7 +149,18 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
         cleanBase64 = cleanBase64.replace(/-/g, "+").replace(/_/g, "/");
         cleanBase64 = cleanBase64.replace(/[^A-Za-z0-9+/=]/g, "");
 
-        // Pad to a multiple of 4, if necessary.
+        // Strip any garbage prefix — every PDF in base64 starts with "JVBERi" (%PDF-).
+        // This handles Oracle "Base64:…" prefixes and any other vendor-specific labels
+        // whose characters happen to survive the charset filter above.
+        if (!cleanBase64.startsWith("JVBERi")) {
+            const pdfStart = cleanBase64.indexOf("JVBERi");
+            if (pdfStart > 0) {
+                cleanBase64 = cleanBase64.substring(pdfStart);
+            }
+        }
+
+        // Strip any existing padding then re-pad to a multiple of 4.
+        cleanBase64 = cleanBase64.replace(/=+$/, "");
         const remainder = cleanBase64.length % 4;
         if (remainder > 0) {
             cleanBase64 += "=".repeat(4 - remainder);
@@ -185,44 +177,50 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
             }
 
             this._clearViewerWrapper();
-            this._iframe.style.display = "none";
             this._toolbar.style.display = "none";
 
-            const blob = await this._loadBlobFromBase64(cleanBase64);
+            // Decode to bytes (used for both blob and PDF.js)
+            const binaryString = atob(cleanBase64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
 
-            // Revoke previous blob URL
+            // Blob URL for download / open-in-tab actions
             this._revokeBlob();
-            this._blobUrl = URL.createObjectURL(blob);
+            this._blobUrl = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
 
-            // Show iframe with native browser PDF viewer
-            this._iframe.src = this._blobUrl;
-            this._iframe.style.display = "block";
+            // Load with PDF.js (renders to Canvas — no native PDF plugin needed)
+            const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+
+            const canvasContainer = document.createElement("div");
+            canvasContainer.className = "pdf-canvas-container";
+            this._viewerWrapper.appendChild(canvasContainer);
+
+            const containerWidth = this._viewerWrapper.clientWidth || 800;
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const baseViewport = page.getViewport({ scale: 1 });
+                const scale = containerWidth / baseViewport.width;
+                const viewport = page.getViewport({ scale });
+
+                const canvas = document.createElement("canvas");
+                canvas.className = "pdf-page-canvas";
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvasContainer.appendChild(canvas);
+
+                const ctx = canvas.getContext("2d");
+                if (!ctx) throw new Error("No se pudo obtener el contexto 2D del canvas.");
+                await page.render({ canvasContext: ctx, viewport }).promise;
+            }
+
             this._toolbar.style.display = "flex";
         } catch (error: any) {
             console.error("PDF Load Error:", error);
             const message = error instanceof Error ? error.message : String(error);
             this._showError(`Error al cargar el PDF: ${message || "formato inválido"}`);
-        }
-    }
-
-    private async _loadBlobFromBase64(base64: string): Promise<Blob> {
-        const dataUrl = `data:application/pdf;base64,${base64}`;
-
-        try {
-            const response = await fetch(dataUrl);
-            if (!response.ok) {
-                throw new Error(`No se pudo decodificar el PDF a través de data URI. Código: ${response.status}`);
-            }
-            return await response.blob();
-        } catch (fetchError) {
-            console.warn("Data URI fetch fallback: usando atob para decodificar el PDF.", fetchError);
-
-            const binaryString = atob(base64);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return new Blob([bytes], { type: "application/pdf" });
         }
     }
 
@@ -240,17 +238,10 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     }
 
     private _printPDF(): void {
-        if (!this._iframe || !this._iframe.contentWindow) return;
-        try {
-            this._iframe.contentWindow.print();
-        } catch {
-            // Fallback: open in new window for printing
-            if (this._blobUrl) {
-                const w = window.open(this._blobUrl);
-                if (w) {
-                    w.onload = () => w.print();
-                }
-            }
+        if (!this._blobUrl) return;
+        const w = window.open(this._blobUrl);
+        if (w) {
+            w.onload = () => w.print();
         }
     }
 
@@ -270,9 +261,8 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     // ========== UI STATES ==========
 
     private _showEmptyState(): void {
-        this._iframe.style.display = "none";
-        this._iframe.src = "";
         this._clearViewerWrapper();
+        this._toolbar.style.display = "none";
 
         const empty = document.createElement("div");
         empty.className = "pdf-empty-state";
@@ -284,9 +274,8 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     }
 
     private _showError(message: string): void {
-        this._iframe.style.display = "none";
-        this._iframe.src = "";
         this._clearViewerWrapper();
+        this._toolbar.style.display = "none";
 
         const error = document.createElement("div");
         error.className = "pdf-error-state";
@@ -298,13 +287,9 @@ export class Base64PDFViewer implements ComponentFramework.StandardControl<IInpu
     }
 
     private _clearViewerWrapper(): void {
-        // Remove everything except the iframe
-        const children = Array.from(this._viewerWrapper.children);
-        children.forEach((child) => {
-            if (child !== this._iframe) {
-                this._viewerWrapper.removeChild(child);
-            }
-        });
+        while (this._viewerWrapper.firstChild) {
+            this._viewerWrapper.removeChild(this._viewerWrapper.firstChild);
+        }
     }
 
     private _revokeBlob(): void {
